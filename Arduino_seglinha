@@ -1,0 +1,61 @@
+// Define os pinos 
+#define rodaD 6 //pinos servo da roda direita
+#define rodaE 5 //pinos servo da roda esquerda
+#define sensorE A5 //pinos sensor esquerdo
+#define sensorD A4 //pinos sensor direito 
+
+#include <Servo.h>//biblioteca para controlar servos
+
+//solicitaçao dos objetos servo para controlar rodas
+Servo rodaEsq;
+Servo rodaDir;
+
+void setup() { 
+  //configuraçoes dos pinos dos servos
+  rodaEsq.attach(rodaE);
+  rodaDir.attach(rodaD);
+
+  //configuraçoes dos pinos dos sensores como entrada
+  pinMode(sensorE,INPUT);
+  pinMode(sensorD, INPUT);
+
+  //iniciaos servos em posicao neutra
+  rodaEsq.write(90);
+  rodaDir.write(90);
+  delay (500);//aguarda para ver se estjam na posicao
+  
+
+}
+
+void loop() {
+  //leitura dos valores dos sensores
+  int lEsq = analogRead(sensorE);
+  int lDir = analogRead(sensorD);
+
+  //Exibe linha para a decisão da leitura dos sensores
+  int linha = 500;
+
+  // Lógica de controle dos servos baseada nas leituras dos sensores 
+  if(lEsq < linha && lDir < linha) {
+    //Os sensores vem a linha clara  (valo abaixo da linha)
+    rodaEsq.write(180); // A roda gira esquerda para frente
+    rodaDir.write(0); // A roda gira direita para trás
+    }
+  else if (lEsq >= linha && lDir < linha) {
+    // Só o sensor esquerdo vê a linha escura (valor acima da linha)
+    rodaEsq.write(90); // A roda gira esquerda para frente
+    rodaDir.write(0); //  A roda gira esquerda para trás
+    }
+  else if (lEsq < linha && lDir >= linha) {
+      // Só o sensor direito vê a linha escura (valor acima da linha)
+    rodaEsq.write(180); // A roda gira esquerda para frente
+    rodaDir.write(90); // Para a roda direita
+    }
+  else {
+    // Os dois sensores vê a linha escura (valor acima da linha)
+    rodaEsq.write(90); // Para a roda esquerda
+    rodaDir.write(90); /// Para a roda direita
+    }
+    delay(30); // Pausa antes da proxima leitura
+}
+  
